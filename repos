@@ -1,8 +1,8 @@
 # repos file
 # path url username
 
+-------------------------------------------------------------------
 name='django-norel'
 type='mecurial'
-url='https://d3f3nd3r@bitbucket.org/wkornewald/django-nonrel/'
+username='d3f3nd3r'
 path='/home/d3f3nd3r/projects/django_stuff/django-nonrel'
---------------------------------------------------------------------
