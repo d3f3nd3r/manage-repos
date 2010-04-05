@@ -1,8 +1,10 @@
 # repos file
-# path url username
 
 -------------------------------------------------------------------
 name='django-norel'
 type='mecurial'
-username='d3f3nd3r'
 path='/home/d3f3nd3r/projects/django_stuff/django-nonrel'
+-------------------------------------------------------------------
+name='djangotoolbox'
+type='mecurial'
+path='/home/d3f3nd3r/projects/django_stuff/djangotoolbox'

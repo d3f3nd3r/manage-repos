@@ -5,7 +5,7 @@ from mercurial import hg, ui, commands
 REPO_FILE_PATH='/home/d3f3nd3r/projects/python/manage-repos/repos'
 
 def parse_repo_file(path):
-    r_args = re.compile('(?P<arg>\w*)=\'(?P<value>[\w\-/@.:]*\')')
+    r_args = re.compile('(?P<arg>\w*)=\'(?P<value>[\w\-/@.:]*)\'')
     r_begin_of_entry = re.compile('^[\-]*$')
         
     repo_file = open(path, 'r')
@@ -21,17 +21,38 @@ def parse_repo_file(path):
             if arg_value is not None:
                 arg_dict = arg_value.groupdict()
                 arg_values[-1].setdefault(arg_dict['arg'], arg_dict['value'])
-                
+
     return arg_values
 
+def init_repos(repo_configs):
+    repos = []
 
-class MecurialRepo():
-    def __init__(self, name, path, url, username):
-        r_url = re.compile('default = (?P<url>[\w\-/@.:]*)')
+
+    for repo_config in repo_configs:
+
+        try:
+            if repo_config.pop('type') == 'mecurial':
+                repos.append(MecurialRepo(**repo_config))
+                print('Added new Mercurial Repo')
+        except KeyError:
+            print('KeyError')
+            
+    return repos
+
+class BaseRepo():
+    def update():
+        pass
+
+class MecurialRepo(BaseRepo):
+    def __init__(self, name, path, username=None):
+        self.type = 'mercurial'
         self.name = name
         self.path = path
 
+        r_url = re.compile('default = (?P<url>[\w\-/@.:]*)')
+
         hgrc_file = open(os.path.join(self.path, '.hg', 'hgrc'))
+
         for line in hgrc_file.readlines():
             url = r_url.search(line)
             if url is not None:
@@ -40,15 +61,24 @@ class MecurialRepo():
         if self.url is None:
             raise ValueError("MecurialRepo "+self.name+" no repo url found")
 
-        self.username = username
+        self.ui = ui.ui()
+        self.repo = hg.repository(self.ui, self.path)
 
     def update(self):
-        pass
+        commands.pull(self.ui, self.repo, self.url)
+        commands.update(self.ui, self.repo)
 
+    def __str__(self):
+        return '%s: %s' %(self.type, self.name)
     
 def main():
-    parse_repo_file(REPO_FILE_PATH)
+    repo_configs = parse_repo_file(REPO_FILE_PATH)
+    
+    repos = init_repos(repo_configs)
 
+    for repo in repos:
+        repo.update()
 
+        
 if __name__ == '__main__':
     main()
