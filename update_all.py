@@ -39,15 +39,20 @@ def init_repos(repo_configs):
             
     return repos
 
-class BaseRepo():
-    def update():
+class BaseRepo(object):
+    def __init__(self, name, path, username=None):
+        self.name = name
+        self.path = path
+        self.username = username
+
+    def update(self):
         pass
+
 
 class MecurialRepo(BaseRepo):
     def __init__(self, name, path, username=None):
+        super(MecurialRepo , self).__init__(name, path, username)
         self.type = 'mercurial'
-        self.name = name
-        self.path = path
 
         r_url = re.compile('default = (?P<url>[\w\-/@.:]*)')
 
