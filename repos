@@ -3,8 +3,8 @@
 -------------------------------------------------------------------
 name='django-norel'
 type='mecurial'
-path='/home/d3f3nd3r/projects/django_stuff/django-nonrel'
+path='/home/d3f3nd3r/projects/django-stuff/django-nonrel'
 -------------------------------------------------------------------
-name='djangotoolbox'
-type='mecurial'
-path='/home/d3f3nd3r/projects/django_stuff/djangotoolbox'
+name='creoleparser'
+type='svn'
+path='/home/d3f3nd3r/projects/python/creoleparser-read-only'

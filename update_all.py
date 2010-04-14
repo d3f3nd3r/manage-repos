@@ -2,7 +2,7 @@ import re, os
 from mercurial import hg, ui, commands
 
 
-REPO_FILE_PATH='/home/d3f3nd3r/projects/python/manage-repos/repos'
+REPO_FILE_PATH='/home/d3f3nd3r/.updateallrepos'
 
 def parse_repo_file(path):
     r_args = re.compile('(?P<arg>\w*)=\'(?P<value>[\w\-/@.:]*)\'')
@@ -31,9 +31,14 @@ def init_repos(repo_configs):
     for repo_config in repo_configs:
 
         try:
-            if repo_config.pop('type') == 'mecurial':
+            repo_type = repo_config.pop('type')
+            if repo_type == 'mecurial':
                 repos.append(MecurialRepo(**repo_config))
                 print('Added new Mercurial Repo')
+
+            if repo_type == 'svn':
+                repos.append(SVNRepo(**repo_config))
+                print('Added new SVN Repo')
         except KeyError:
             print('KeyError')
             
@@ -48,6 +53,15 @@ class BaseRepo(object):
     def update(self):
         pass
 
+import pysvn
+class SVNRepo(BaseRepo):
+    def __init__(self, name, path, username=None):
+        super(SVNRepo , self).__init__(name, path, username)
+        self.client = pysvn.Client()
+
+    def update(self):
+        self.client.update(self.path)
+        
 
 class MecurialRepo(BaseRepo):
     def __init__(self, name, path, username=None):
@@ -75,6 +89,7 @@ class MecurialRepo(BaseRepo):
 
     def __str__(self):
         return '%s: %s' %(self.type, self.name)
+
     
 def main():
     repo_configs = parse_repo_file(REPO_FILE_PATH)
@@ -82,6 +97,7 @@ def main():
     repos = init_repos(repo_configs)
 
     for repo in repos:
+        print("Updating "+repo.name)
         repo.update()
 
         
